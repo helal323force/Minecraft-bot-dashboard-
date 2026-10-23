@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MC Bot Control</title><link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="auth" class="auth-wrap">
+  <section class="panel auth-panel"><div class="brand">⛏ MC <span>BOT CONTROL</span></div>
+    <h1 id="auth-title">Welcome back</h1><p class="muted">Manage your authorized Minecraft bot connections.</p>
+    <form id="auth-form"><label>Username<input id="auth-user" required minlength="3" maxlength="24" autocomplete="username"></label>
+    <label>Password<input id="auth-pass" type="password" required minlength="10" maxlength="128" autocomplete="current-password"></label>
+    <button class="primary full" id="auth-submit">Log in</button></form>
+    <p id="auth-error" class="error"></p><button id="auth-toggle" class="link">Need an account? Register</button>
+  </section>
+</div>
+<div id="app" class="app hidden">
+  <aside class="sidebar"><div class="brand">⛏ MC <span>BOT CONTROL</span></div>
+    <nav><button class="nav active" data-view="overview">▦ Overview</button><button class="nav" data-view="profiles">◈ Server profiles</button><button class="nav" data-view="players">♙ Players & actions</button><button class="nav" data-view="inventory">▤ Live inventory</button><button class="nav" data-view="logs">≋ Logs & history</button><button class="nav admin-only hidden" data-view="admin">⚙ Admin</button></nav>
+    <div class="sidebar-bottom"><button id="theme">☼ Toggle theme</button><button id="logout">↪ Log out</button></div>
+  </aside>
+  <main class="main"><header class="topbar"><div><p class="eyebrow">CONTROL CENTER</p><h1 id="page-title">Overview</h1></div><div class="userbox"><span id="user-label">User</span><span id="role-label" class="pill">viewer</span></div></header>
+    <div id="notice" class="notice hidden"></div>
+    <section id="view-overview" class="view">
+      <div class="hero"><div><p class="eyebrow">MINECRAFT AUTOMATION</p><h2>Your server, one panel.</h2><p class="muted">Manage connection state, review events, and control your bot.</p></div><div class="hero-icon">⛏</div></div>
+      <div class="stats"><article class="stat"><span>Profiles</span><strong id="stat-profiles">0</strong><small>Saved server setups</small></article><article class="stat"><span>Connected bots</span><strong id="stat-online">0</strong><small>Current live sessions</small></article><article class="stat"><span>Reconnects</span><strong id="stat-reconnects">0</strong><small>Since process start</small></article><article class="stat"><span>Backend uptime</span><strong id="stat-uptime">—</strong><small>Current process</small></article></div>
+      <div class="section-head"><h2>Server profiles</h2><button class="primary" data-go="profiles">+ Add profile</button></div><div id="overview-profiles" class="cards"></div>
+      <div class="section-head"><h2>Recent events</h2><button class="secondary" data-go="logs">View all logs</button></div><div id="recent-logs" class="panel log-list"></div>
+    </section>
+    <section id="view-profiles" class="view hidden"><div class="section-head"><div><h2>Server profiles</h2><p class="muted">Save one profile per server or bot configuration.</p></div><button class="primary" id="add-profile">+ Add profile</button></div><div id="profile-list" class="cards"></div>
+      <div id="profile-editor" class="panel hidden"><h2 id="editor-title">Add server profile</h2><form id="profile-form" class="form-grid">
+      <input type="hidden" id="profile-id"><label>Profile name<input id="profile-name" required maxlength="60" placeholder="Halal SMP"></label>
+      <label>Edition<select id="profile-edition"><option value="java">Java Edition</option><option value="bedrock">Bedrock Edition</option></select></label>
+      <label>Server IP / Host<input id="profile-host" required maxlength="253" placeholder="play.example.net"></label><label>Port<input id="profile-port" type="number" min="1" max="65535" value="25565" required></label>
+      <label>Bot username<input id="profile-username" required maxlength="32" placeholder="HalalSMP_Bot"></label><label>Reconnect delay (seconds)<input id="profile-retry" type="number" min="5" max="300" value="15"></label>
+      <label class="check"><input id="profile-reconnect" type="checkbox" checked> Auto reconnect</label><label class="check"><input id="profile-eat" type="checkbox"> Auto eat (Java only)</label>
+      <div class="form-actions"><button class="primary">Save profile</button><button type="button" id="cancel-editor" class="secondary">Cancel</button></div></form></div>
+    </section>
+    <section id="view-players" class="view hidden"><div class="section-head"><div><h2>Players & actions</h2><p class="muted">Choose a Java bot profile to load its visible player list.</p></div><select id="player-profile" class="profile-select"></select></div><div id="players-list" class="cards"></div><div id="player-actions" class="panel hidden"><h3 id="selected-player"></h3><p class="muted">Actions are basic Java bot controls; PvP may be restricted by server rules.</p><div class="action-grid"><button data-action="follow" class="secondary">Follow</button><button data-action="stop-follow" class="secondary">Stop follow</button><button data-action="pvp" class="danger">PvP / attack</button><button data-action="stop-pvp" class="secondary">Stop PvP</button><button data-action="protect" class="secondary">Protect player</button><button data-action="stop-protect" class="secondary">Stop protect</button></div></div></section>
+    <section id="view-inventory" class="view hidden"><div class="section-head"><div><h2>Live inventory</h2><p class="muted">Java bot inventory and health/food snapshot.</p></div><select id="inventory-profile" class="profile-select"></select><button id="refresh-inventory" class="secondary">↻ Refresh</button><button id="eat-now" class="primary">Auto eat now</button></div><div id="inventory-status" class="stats"></div><div id="inventory-items" class="inventory-grid"></div></section>
+    <section id="view-logs" class="view hidden"><div class="section-head"><div><h2>Logs & history</h2><p class="muted">Connection, chat, action and error events.</p></div><div class="inline-actions"><button id="export-logs" class="secondary">Export logs</button><button id="backup" class="secondary">Backup profiles</button></div></div><div class="panel"><input id="log-filter" placeholder="Filter logs…" class="filter-input"><div id="logs-list" class="log-list"></div></div></section>
+    <section id="view-admin" class="view hidden"><div class="section-head"><h2>Admin controls</h2><button id="maintenance-toggle" class="danger">Enable maintenance</button></div><div class="panel"><h3>Accounts & roles</h3><div id="users-list"></div></div></section>
+    <footer>Use only on servers you own or are allowed to administer. Free hosting may sleep and cannot guarantee 24/7 runtime.</footer>
+  </main>
+</div>
+<script src="/socket.io/socket.io.js"></script><script src="/app.js"></script>
+</body></html>
