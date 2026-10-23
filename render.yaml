@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: minecraft-bot-dashboard
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ALLOW_REGISTRATION
+        value: "true"
